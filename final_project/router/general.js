@@ -38,23 +38,40 @@ public_users.get('/isbn/:isbn',function (req, res) {
   // see https://github.com/ibm-developer-skills-network/expressBookReviews/issues/219
   // index/id number = isbn
   let input = Number(req.params.isbn);
-  let output = books[input];
-  let payload = JSON.stringify(output);
-  return res.send(payload);
+  //promise that returns json on resolve
+  let bookres = new Promise((resolve,reject) => {
+    let output = books[input];
+    let payload = JSON.stringify(output);
+    resolve(payload);
+  })
+  //use .then on it to take the return and call res.send
+  bookres.then((asynPayload) => {
+    return res.send(asynPayload);
+  })
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
+  console.log("start call")
   let input = req.params.author;
-  let indicies = Object.keys(books);
-  let output = {};
-  indicies.forEach(index => {
-    if (books[index].author === input) {
+  //promise that returns json on resolve
+  let bookres = new Promise((resolve,reject) => {
+    let indicies = Object.keys(books);
+    let output = {};
+    indicies.forEach(index => {
+      if (books[index].author === input) {
         output[index] = books[index];
-    }
+      }
+    });
+    let payload = JSON.stringify(output);
+    resolve(payload);
   });
-  let payload = JSON.stringify(output);
-  return res.send(payload);
+  //use .then on promise to call the res.send
+  bookres.then((asynPayload) => {
+    console.log("in promise");
+    return res.send(asynPayload);
+  });
+  console.log("end call");
 });
 
 // Get all books based on title
