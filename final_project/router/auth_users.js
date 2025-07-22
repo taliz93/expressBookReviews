@@ -14,19 +14,28 @@ const isValid = (username)=>{ //returns boolean
 }
 
 const authenticatedUser = (username,password)=>{ //returns boolean
-//write code to check if username and password match the one we have in records.
+  let user = users.filter((user) => user.username === username);
+  if (user.password === password) {
+    return true;
+  };
+  return false;
 }
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
   const currentuser = req.body.username;
   const currentpass = req.body.password;
-
-  if (!isValid(currentuser)) {
-    return res.status(404).json({message: "invalid user!"});
-  }
   
+  if (currentuser && currentpass) {
+    if (!authenticatedUser(currentuser,currentpass)) {
+    
+    }
+  } else {
+    return res.status(404).json({message: "missing data!"});
+  }
 
+  
+  
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
