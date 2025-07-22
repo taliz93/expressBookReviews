@@ -26,18 +26,18 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
-  const currentuser = req.body.username;
-  const currentpass = req.body.password;
+  const username = req.body.username;
+  const password = req.body.password;
   
-  if (currentuser && currentpass) {
-    if (!authenticatedUser(currentuser,currentpass)) {
+  if (username && password) {
+    if (!authenticatedUser(username,password)) {
       return res.status(208).json({message:"invalid login! check creds"});
     } else {
-      let nuToken = jwt.sign({
-        data: currentpass
+      let accessToken = jwt.sign({
+        data: password
       }, 'access', {expiresIn: 3600});
       req.session.authorization = {
-        nuToken, currentuser
+        accessToken, username
       };
       return res.status(200).json({message: "login successful!"});
     }
@@ -48,8 +48,16 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  console.log(req.session.authorization.username);
+  let input = Number(req.params.isbn);
+  let reviewtext = req.body.review;
+  let reviewuser = req.session.authorization.username;
+  let reviewlist = books[input].reviews;
+  console.log(books[input]);
+  reviewlist[reviewuser] = reviewtext;
+  books[input].reviews = reviewlist;
+  console.log(books[input]);
+  return res.status(200).json({message: `put ${reviewuser}'s review for isbn ${input}!`});
 });
 
 module.exports.authenticated = regd_users;
