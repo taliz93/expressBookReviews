@@ -19,7 +19,14 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
-  //Write your code here
+  const currentuser = req.body.username;
+  const currentpass = req.body.password;
+
+  if (!isValid(currentuser)) {
+    return res.status(404).json({message: "invalid user!"});
+  }
+  
+
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
