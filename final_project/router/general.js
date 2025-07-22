@@ -18,8 +18,12 @@ public_users.get('/',function (req, res) {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  // see https://github.com/ibm-developer-skills-network/expressBookReviews/issues/219
+  // index/id number = isbn
+  let input = Number(req.params.isbn);
+  let output = books[input];
+  let payload = JSON.stringify(output);
+  return res.send(payload);
  });
   
 // Get book details based on author
