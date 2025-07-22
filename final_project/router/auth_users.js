@@ -15,9 +15,12 @@ const isValid = (username)=>{ //returns boolean
 
 const authenticatedUser = (username,password)=>{ //returns boolean
   let user = users.filter((user) => user.username === username);
-  if (user.password === password) {
-    return true;
-  };
+  if (user.length > 0) {
+    let output = user[0];
+    if (output.password === password) {
+        return true;
+    };
+  }
   return false;
 }
 
@@ -28,15 +31,19 @@ regd_users.post("/login", (req,res) => {
   
   if (currentuser && currentpass) {
     if (!authenticatedUser(currentuser,currentpass)) {
-    
+      return res.status(208).json({message:"invalid login! check creds"});
+    } else {
+      let nuToken = jwt.sign({
+        data: currentpass
+      }, 'access', {expiresIn: 3600});
+      req.session.authorization = {
+        nuToken, currentuser
+      };
+      return res.status(200).json({message: "login successful!"});
     }
   } else {
     return res.status(404).json({message: "missing data!"});
   }
-
-  
-  
-  return res.status(300).json({message: "Yet to be implemented"});
 });
 
 // Add a book review
