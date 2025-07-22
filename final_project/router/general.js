@@ -77,15 +77,22 @@ public_users.get('/author/:author',function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   let input = req.params.title;
-  let indicies = Object.keys(books);
-  let output = {};
-  indicies.forEach(index => {
-    if (books[index].title === input) {
-        output[index] = books[index];
-    }
+  //promise returns json on resolve
+  let bookres = new Promise((resolve,reject) => {
+    let indicies = Object.keys(books);
+    let output = {};
+    indicies.forEach(index => {
+      if (books[index].title === input) {
+          output[index] = books[index];
+      }
+    });
+    let payload = JSON.stringify(output);
+    resolve(payload);
+  })
+  //use .then to call res.send
+  bookres.then((asynPayload) => {
+    return res.send(asynPayload);
   });
-  let payload = JSON.stringify(output);
-  return res.send(payload);
 });
 
 //  Get book review
