@@ -28,8 +28,16 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let input = req.params.author;
+  let indicies = Object.keys(books);
+  let output = {};
+  indicies.forEach(index => {
+    if (books[index].author === input) {
+        output[index] = books[index];
+    }
+  });
+  let payload = JSON.stringify(output);
+  return res.send(payload);
 });
 
 // Get all books based on title
